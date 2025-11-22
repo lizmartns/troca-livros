@@ -1,0 +1,17 @@
+{
+  "name": "book-exchange-backend",
+  "version": "1.0.0",
+  "description": "Backend para aplicação de troca de livros entre usuários",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["livros", "troca", "express", "nodejs"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

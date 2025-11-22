@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troca de Livros - Conectando Leitores</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ============================================
+         TELA 1: LOGIN
+         ============================================ -->
+    <section id="tela-login" class="tela ativa">
+        <div class="container-form">
+            <div class="card-form">
+                <h1 class="titulo-principal">📚 Troca de Livros</h1>
+                <p class="subtitulo">Conectando leitores da sua cidade</p>
+
+                <form id="form-login">
+                    <div class="grupo-input">
+                        <label for="login-email">Email:</label>
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            name="email" 
+                            placeholder="seu@email.com" 
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="login-senha">Senha:</label>
+                        <input 
+                            type="password" 
+                            id="login-senha" 
+                            name="senha" 
+                            placeholder="••••••••" 
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primario">Entrar</button>
+                </form>
+
+                <div class="divisor">ou</div>
+
+                <button id="btn-ir-cadastro" class="btn btn-secundario">Criar Conta</button>
+
+                <div class="mensagem-erro" id="msg-erro-login"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TELA 2: CADASTRO
+         ============================================ -->
+    <section id="tela-cadastro" class="tela">
+        <div class="container-form">
+            <div class="card-form">
+                <h1 class="titulo-principal">Criar Conta</h1>
+                <p class="subtitulo">Junte-se à nossa comunidade de leitores</p>
+
+                <form id="form-cadastro">
+                    <div class="grupo-input">
+                        <label for="cadastro-nome">Nome Completo:</label>
+                        <input 
+                            type="text" 
+                            id="cadastro-nome" 
+                            name="nome" 
+                            placeholder="Seu nome" 
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="cadastro-email">Email:</label>
+                        <input 
+                            type="email" 
+                            id="cadastro-email" 
+                            name="email" 
+                            placeholder="seu@email.com" 
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="cadastro-senha">Senha:</label>
+                        <input 
+                            type="password" 
+                            id="cadastro-senha" 
+                            name="senha" 
+                            placeholder="••••••••" 
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="cadastro-confirmacao">Confirmar Senha:</label>
+                        <input 
+                            type="password" 
+                            id="cadastro-confirmacao" 
+                            name="confirmacaoSenha" 
+                            placeholder="••••••••" 
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="cadastro-cidade">Cidade:</label>
+                        <input 
+                            type="text" 
+                            id="cadastro-cidade" 
+                            name="cidade" 
+                            placeholder="São Paulo" 
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="cadastro-bairro">Bairro:</label>
+                        <input 
+                            type="text" 
+                            id="cadastro-bairro" 
+                            name="bairro" 
+                            placeholder="Vila Mariana" 
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primario">Cadastrar</button>
+                </form>
+
+                <button id="btn-voltar-login" class="btn btn-secundario">Voltar para Login</button>
+
+                <div class="mensagem-erro" id="msg-erro-cadastro"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TELA 3: HOME (Após Login)
+         ============================================ -->
+    <section id="tela-home" class="tela">
+        <!-- Cabeçalho com dados do usuário -->
+        <header class="cabecalho">
+            <div class="cabecalho-conteudo">
+                <div class="info-usuario">
+                    <h2>Olá, <span id="nome-usuario">Usuário</span>!</h2>
+                    <p id="info-localizacao" class="localizacao">📍 Sua Cidade</p>
+                </div>
+                <button id="btn-logout" class="btn btn-logout">Sair</button>
+            </div>
+        </header>
+
+        <!-- Conteúdo principal -->
+        <main class="conteudo-home">
+            <div class="container">
+                <section class="secao-livros">
+                    <h2 class="titulo-secao">📖 Livros Disponíveis para Troca</h2>
+                    <p class="descricao-secao">Confira os livros que seus vizinhos estão dispostos a trocar</p>
+
+                    <!-- Lista de livros -->
+                    <div id="lista-livros" class="grid-livros">
+                        <!-- Os livros serão inseridos aqui via JavaScript -->
+                        <div class="carregando">Carregando livros...</div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </section>
+
+    <!-- ============================================
+         MODAL: Solicitar Troca
+         ============================================ -->
+    <div id="modal-troca" class="modal">
+        <div class="modal-conteudo">
+            <span class="fechar-modal">&times;</span>
+            <h2>Solicitar Troca</h2>
+            <p id="modal-info-livro"></p>
+            <p id="modal-info-dono"></p>
+            <button id="btn-confirmar-troca" class="btn btn-primario">Confirmar Solicitação</button>
+            <button class="btn btn-secundario fechar-modal-btn">Cancelar</button>
+            <div class="mensagem-erro" id="msg-erro-troca"></div>
+        </div>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
