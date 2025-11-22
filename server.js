@@ -192,6 +192,52 @@ app.post('/api/login', (req, res) => {
 });
 
 // ============================================
+// ROTA: POST /api/books
+// Descrição: Cadastra um novo livro para troca
+// ============================================
+
+app.post('/api/books', (req, res) => {
+  const { titulo, autor, descricao, donoid } = req.body;
+
+  // Validação básica
+  if (!titulo || !autor || !descricao || !donoid) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: 'Título, autor, descrição e ID do dono são obrigatórios'
+    });
+  }
+
+  // Buscar dados do dono
+  const dono = users.find(user => user.id === parseInt(donoid));
+  if (!dono) {
+    return res.status(404).json({
+      sucesso: false,
+      mensagem: 'Dono do livro não encontrado'
+    });
+  }
+
+  // Criar novo livro
+  const novoLivro = {
+    id: nextBookId++,
+    titulo,
+    autor,
+    dono: dono.nome,
+    donoid: dono.id,
+    cidade: dono.cidade,
+    bairro: dono.bairro,
+    descricao
+  };
+
+  books.push(novoLivro);
+
+  return res.status(201).json({
+    sucesso: true,
+    mensagem: 'Livro cadastrado com sucesso',
+    livro: novoLivro
+  });
+});
+
+// ============================================
 // ROTA: GET /api/books
 // Descrição: Retorna livros disponíveis na mesma cidade
 // Query: ?cidade=<cidade>

@@ -15,7 +15,8 @@ const API_URL = 'http://localhost:3000/api';
 
 let estadoApp = {
     usuarioLogado: null,
-    livroSelecionado: null
+    livroSelecionado: null,
+    solicitacaoSelecionada: null
 };
 
 // ============================================
@@ -30,6 +31,7 @@ const telaHome = document.getElementById('tela-home');
 // Formulários
 const formLogin = document.getElementById('form-login');
 const formCadastro = document.getElementById('form-cadastro');
+const formCadastroLivro = document.getElementById('form-cadastro-livro');
 
 // Botões de navegação
 const btnIrCadastro = document.getElementById('btn-ir-cadastro');
@@ -40,19 +42,34 @@ const btnLogout = document.getElementById('btn-logout');
 const msgErroLogin = document.getElementById('msg-erro-login');
 const msgErroCadastro = document.getElementById('msg-erro-cadastro');
 const msgErroTroca = document.getElementById('msg-erro-troca');
+const msgErroCadastroLivro = document.getElementById('msg-erro-cadastro-livro');
 
 // Home
 const nomeUsuario = document.getElementById('nome-usuario');
 const infoLocalizacao = document.getElementById('info-localizacao');
 const listaLivros = document.getElementById('lista-livros');
+const listaMeusLivros = document.getElementById('lista-meus-livros');
+const listaSolicitacoes = document.getElementById('lista-solicitacoes');
 
-// Modal
+// Abas
+const abaBtns = document.querySelectorAll('.aba-btn');
+const secoesAbas = document.querySelectorAll('.secao-aba');
+
+// Modal de troca
 const modalTroca = document.getElementById('modal-troca');
 const fecharModal = document.querySelector('.fechar-modal');
 const fecharModalBtn = document.querySelector('.fechar-modal-btn');
 const btnConfirmarTroca = document.getElementById('btn-confirmar-troca');
 const modalInfoLivro = document.getElementById('modal-info-livro');
 const modalInfoDono = document.getElementById('modal-info-dono');
+
+// Modal de responder solicitação
+const modalResponderSolicitacao = document.getElementById('modal-responder-solicitacao');
+const fecharModalResposta = document.querySelector('.fechar-modal-resposta');
+const fecharModalRespostaBtn = document.querySelector('.fechar-modal-resposta-btn');
+const btnAceitarSolicitacao = document.getElementById('btn-aceitar-solicitacao');
+const btnRejeitarSolicitacao = document.getElementById('btn-rejeitar-solicitacao');
+const modalSolicitacaoInfo = document.getElementById('modal-solicitacao-info');
 
 // ============================================
 // FUNÇÕES DE NAVEGAÇÃO ENTRE TELAS
@@ -63,12 +80,9 @@ const modalInfoDono = document.getElementById('modal-info-dono');
  * @param {HTMLElement} tela - Elemento da tela a ser exibida
  */
 function mostrarTela(tela) {
-    // Esconde todas as telas
     document.querySelectorAll('.tela').forEach(t => {
         t.classList.remove('ativa');
     });
-
-    // Mostra a tela desejada
     tela.classList.add('ativa');
 }
 
@@ -97,6 +111,20 @@ function exibirErro(elemento, mensagem) {
 function limparErro(elemento) {
     elemento.textContent = '';
     elemento.classList.remove('ativa');
+}
+
+/**
+ * Muda para uma aba específica
+ * @param {string} abaId - ID da aba a ser exibida
+ */
+function mudarAba(abaId) {
+    // Remove classe ativa de todos os botões e seções
+    abaBtns.forEach(btn => btn.classList.remove('aba-ativa'));
+    secoesAbas.forEach(secao => secao.classList.remove('ativa'));
+
+    // Adiciona classe ativa ao botão e seção selecionados
+    document.querySelector(`[data-aba="${abaId}"]`).classList.add('aba-ativa');
+    document.getElementById(`aba-${abaId}`).classList.add('ativa');
 }
 
 // ============================================
@@ -171,19 +199,14 @@ async function fazerLogin(credenciais) {
 
         const resposta = await fazerRequisicaoPost('/login', credenciais);
 
-        // Salva dados do usuário no estado
         estadoApp.usuarioLogado = resposta.usuario;
 
-        // Atualiza a tela home com dados do usuário
         atualizarTelaHome();
-
-        // Carrega os livros
         await carregarLivros();
+        await carregarMeusLivros();
+        await carregarSolicitacoes();
 
-        // Mostra a tela home
         mostrarTela(telaHome);
-
-        // Limpa o formulário
         limparFormulario(formLogin);
     } catch (erro) {
         exibirErro(msgErroLogin, erro.message);
@@ -200,13 +223,9 @@ async function fazerCadastro(dados) {
 
         const resposta = await fazerRequisicaoPost('/register', dados);
 
-        // Mostra mensagem de sucesso
         alert('Cadastro realizado com sucesso! Faça login para continuar.');
 
-        // Volta para a tela de login
         mostrarTela(telaLogin);
-
-        // Limpa o formulário
         limparFormulario(formCadastro);
     } catch (erro) {
         exibirErro(msgErroCadastro, erro.message);
@@ -219,6 +238,7 @@ async function fazerCadastro(dados) {
 function fazerLogout() {
     estadoApp.usuarioLogado = null;
     estadoApp.livroSelecionado = null;
+    estadoApp.solicitacaoSelecionada = null;
     mostrarTela(telaLogin);
     limparFormulario(formLogin);
 }
@@ -242,16 +262,33 @@ async function carregarLivros() {
 }
 
 /**
- * Renderiza os livros na tela
+ * Carrega os livros do usuário logado
+ */
+async function carregarMeusLivros() {
+    try {
+        const cidade = estadoApp.usuarioLogado.cidade;
+        const resposta = await fazerRequisicaoGet(`/books?cidade=${encodeURIComponent(cidade)}`);
+
+        const meusLivros = resposta.livros.filter(livro => livro.donoid === estadoApp.usuarioLogado.id);
+        renderizarMeusLivros(meusLivros);
+    } catch (erro) {
+        listaMeusLivros.innerHTML = `<div class="carregando">Erro ao carregar seus livros: ${erro.message}</div>`;
+    }
+}
+
+/**
+ * Renderiza os livros disponíveis na tela
  * @param {array} livros - Array de livros
  */
 function renderizarLivros(livros) {
-    if (livros.length === 0) {
+    const livrosFiltrados = livros.filter(livro => livro.donoid !== estadoApp.usuarioLogado.id);
+
+    if (livrosFiltrados.length === 0) {
         listaLivros.innerHTML = '<div class="carregando">Nenhum livro disponível no momento.</div>';
         return;
     }
 
-    listaLivros.innerHTML = livros.map(livro => `
+    listaLivros.innerHTML = livrosFiltrados.map(livro => `
         <div class="card-livro">
             <h3 class="card-livro-titulo">${livro.titulo}</h3>
             <p class="card-livro-autor">por ${livro.autor}</p>
@@ -274,12 +311,108 @@ function renderizarLivros(livros) {
 }
 
 /**
+ * Renderiza os livros do usuário
+ * @param {array} livros - Array de livros do usuário
+ */
+function renderizarMeusLivros(livros) {
+    if (livros.length === 0) {
+        listaMeusLivros.innerHTML = '<div class="carregando">Você ainda não cadastrou nenhum livro</div>';
+        return;
+    }
+
+    listaMeusLivros.innerHTML = livros.map(livro => `
+        <div class="card-livro">
+            <h3 class="card-livro-titulo">${livro.titulo}</h3>
+            <p class="card-livro-autor">por ${livro.autor}</p>
+            
+            <div class="card-livro-info">
+                <strong>Seu livro</strong>
+            </div>
+            
+            <div class="card-livro-bairro">
+                📍 ${livro.bairro}
+            </div>
+            
+            <p class="card-livro-descricao">${livro.descricao}</p>
+        </div>
+    `).join('');
+}
+
+/**
+ * Cadastra um novo livro
+ * @param {object} dados - Dados do novo livro
+ */
+async function cadastrarLivro(dados) {
+    try {
+        limparErro(msgErroCadastroLivro);
+
+        const dadosCompletos = {
+            ...dados,
+            donoid: estadoApp.usuarioLogado.id
+        };
+
+        const resposta = await fazerRequisicaoPost('/books', dadosCompletos);
+
+        alert('Livro cadastrado com sucesso!');
+        limparFormulario(formCadastroLivro);
+
+        await carregarLivros();
+        await carregarMeusLivros();
+    } catch (erro) {
+        exibirErro(msgErroCadastroLivro, erro.message);
+    }
+}
+
+/**
  * Atualiza a tela home com dados do usuário logado
  */
 function atualizarTelaHome() {
     const usuario = estadoApp.usuarioLogado;
     nomeUsuario.textContent = usuario.nome;
     infoLocalizacao.textContent = `📍 ${usuario.bairro}, ${usuario.cidade}`;
+}
+
+// ============================================
+// FUNÇÕES DE SOLICITAÇÕES DE TROCA
+// ============================================
+
+/**
+ * Carrega as solicitações de troca recebidas
+ */
+async function carregarSolicitacoes() {
+    try {
+        const resposta = await fazerRequisicaoGet(`/trade-requests?usuarioId=${estadoApp.usuarioLogado.id}`);
+
+        renderizarSolicitacoes(resposta.solicitacoes);
+    } catch (erro) {
+        listaSolicitacoes.innerHTML = `<div class="carregando">Erro ao carregar solicitações: ${erro.message}</div>`;
+    }
+}
+
+/**
+ * Renderiza as solicitações de troca recebidas
+ * @param {array} solicitacoes - Array de solicitações
+ */
+function renderizarSolicitacoes(solicitacoes) {
+    if (solicitacoes.length === 0) {
+        listaSolicitacoes.innerHTML = '<div class="carregando">Nenhuma solicitação recebida</div>';
+        return;
+    }
+
+    listaSolicitacoes.innerHTML = solicitacoes.map(solicitacao => `
+        <div class="card-solicitacao">
+            <div class="solicitacao-info">
+                <div class="solicitacao-usuario">👤 ${solicitacao.nomeUsuario}</div>
+                <div class="solicitacao-livro">📖 Interessado em: "${solicitacao.tituloLivro}"</div>
+                <div class="solicitacao-data">📅 ${new Date(solicitacao.data).toLocaleDateString('pt-BR')}</div>
+            </div>
+            <div class="solicitacao-acoes">
+                <button class="btn-responder" onclick="abrirModalResponderSolicitacao(${solicitacao.id}, '${solicitacao.nomeUsuario}', '${solicitacao.tituloLivro}', '${solicitacao.emailUsuario}')">
+                    Responder
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
 
 // ============================================
@@ -309,6 +442,31 @@ function fecharModalTroca() {
 }
 
 /**
+ * Abre o modal para responder uma solicitação
+ * @param {number} solicitacaoId - ID da solicitação
+ * @param {string} nomeUsuario - Nome do usuário que solicitou
+ * @param {string} tituloLivro - Título do livro
+ * @param {string} emailUsuario - Email do usuário
+ */
+function abrirModalResponderSolicitacao(solicitacaoId, nomeUsuario, tituloLivro, emailUsuario) {
+    estadoApp.solicitacaoSelecionada = {
+        id: solicitacaoId,
+        nomeUsuario,
+        emailUsuario
+    };
+    modalSolicitacaoInfo.textContent = `${nomeUsuario} está interessado em trocar "${tituloLivro}". Deseja aceitar?`;
+    modalResponderSolicitacao.classList.add('ativo');
+}
+
+/**
+ * Fecha o modal de responder solicitação
+ */
+function fecharModalResponderSolicitacao() {
+    modalResponderSolicitacao.classList.remove('ativo');
+    estadoApp.solicitacaoSelecionada = null;
+}
+
+/**
  * Realiza a solicitação de troca
  */
 async function realizarSolicitacaoTroca() {
@@ -322,14 +480,32 @@ async function realizarSolicitacaoTroca() {
 
         const resposta = await fazerRequisicaoPost('/request-trade', dados);
 
-        // Mostra mensagem de sucesso
         alert('Solicitação de troca enviada com sucesso!');
 
-        // Fecha o modal
         fecharModalTroca();
+        await carregarSolicitacoes();
     } catch (erro) {
         exibirErro(msgErroTroca, erro.message);
     }
+}
+
+/**
+ * Aceita uma solicitação de troca
+ */
+async function aceitarSolicitacao() {
+    const solicitacao = estadoApp.solicitacaoSelecionada;
+    alert(`Você aceitou a troca com ${solicitacao.nomeUsuario}! Você pode entrar em contato pelo email: ${solicitacao.emailUsuario}`);
+    fecharModalResponderSolicitacao();
+    await carregarSolicitacoes();
+}
+
+/**
+ * Rejeita uma solicitação de troca
+ */
+async function rejeitarSolicitacao() {
+    alert('Solicitação rejeitada.');
+    fecharModalResponderSolicitacao();
+    await carregarSolicitacoes();
 }
 
 // ============================================
@@ -383,17 +559,53 @@ formCadastro.addEventListener('submit', (evento) => {
     });
 });
 
-// --- Modal ---
+formCadastroLivro.addEventListener('submit', (evento) => {
+    evento.preventDefault();
+
+    const titulo = document.getElementById('livro-titulo').value;
+    const autor = document.getElementById('livro-autor').value;
+    const descricao = document.getElementById('livro-descricao').value;
+
+    cadastrarLivro({
+        titulo,
+        autor,
+        descricao
+    });
+});
+
+// --- Abas ---
+
+abaBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const abaId = btn.getAttribute('data-aba');
+        mudarAba(abaId);
+    });
+});
+
+// --- Modal de troca ---
 
 fecharModal.addEventListener('click', fecharModalTroca);
 fecharModalBtn.addEventListener('click', fecharModalTroca);
 
 btnConfirmarTroca.addEventListener('click', realizarSolicitacaoTroca);
 
-// Fecha o modal ao clicar fora dele
 modalTroca.addEventListener('click', (evento) => {
     if (evento.target === modalTroca) {
         fecharModalTroca();
+    }
+});
+
+// --- Modal de responder solicitação ---
+
+fecharModalResposta.addEventListener('click', fecharModalResponderSolicitacao);
+fecharModalRespostaBtn.addEventListener('click', fecharModalResponderSolicitacao);
+
+btnAceitarSolicitacao.addEventListener('click', aceitarSolicitacao);
+btnRejeitarSolicitacao.addEventListener('click', rejeitarSolicitacao);
+
+modalResponderSolicitacao.addEventListener('click', (evento) => {
+    if (evento.target === modalResponderSolicitacao) {
+        fecharModalResponderSolicitacao();
     }
 });
 

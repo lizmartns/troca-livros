@@ -155,7 +155,15 @@
         <!-- Conteúdo principal -->
         <main class="conteudo-home">
             <div class="container">
-                <section class="secao-livros">
+                <!-- Abas de navegação -->
+                <div class="abas-navegacao">
+                    <button class="aba-btn aba-ativa" data-aba="livros-disponiveis">📖 Livros Disponíveis</button>
+                    <button class="aba-btn" data-aba="meus-livros">📚 Meus Livros</button>
+                    <button class="aba-btn" data-aba="solicitacoes">📬 Solicitações Recebidas</button>
+                </div>
+
+                <!-- ABA 1: Livros Disponíveis para Troca -->
+                <section id="aba-livros-disponiveis" class="secao-aba ativa">
                     <h2 class="titulo-secao">📖 Livros Disponíveis para Troca</h2>
                     <p class="descricao-secao">Confira os livros que seus vizinhos estão dispostos a trocar</p>
 
@@ -163,6 +171,73 @@
                     <div id="lista-livros" class="grid-livros">
                         <!-- Os livros serão inseridos aqui via JavaScript -->
                         <div class="carregando">Carregando livros...</div>
+                    </div>
+                </section>
+
+                <!-- ABA 2: Meus Livros -->
+                <section id="aba-meus-livros" class="secao-aba">
+                    <h2 class="titulo-secao">📚 Meus Livros para Troca</h2>
+                    <p class="descricao-secao">Adicione seus livros e deixe-os disponíveis para troca</p>
+
+                    <!-- Formulário para cadastrar novo livro -->
+                    <div class="card-formulario">
+                        <h3>Cadastrar Novo Livro</h3>
+                        <form id="form-cadastro-livro">
+                            <div class="grupo-input">
+                                <label for="livro-titulo">Título do Livro:</label>
+                                <input 
+                                    type="text" 
+                                    id="livro-titulo" 
+                                    name="titulo" 
+                                    placeholder="Ex: Dom Casmurro" 
+                                    required
+                                >
+                            </div>
+
+                            <div class="grupo-input">
+                                <label for="livro-autor">Autor:</label>
+                                <input 
+                                    type="text" 
+                                    id="livro-autor" 
+                                    name="autor" 
+                                    placeholder="Ex: Machado de Assis" 
+                                    required
+                                >
+                            </div>
+
+                            <div class="grupo-input">
+                                <label for="livro-descricao">Descrição:</label>
+                                <textarea 
+                                    id="livro-descricao" 
+                                    name="descricao" 
+                                    placeholder="Descreva brevemente o livro..." 
+                                    rows="4" 
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primario">Adicionar Livro</button>
+                        </form>
+                        <div class="mensagem-erro" id="msg-erro-cadastro-livro"></div>
+                    </div>
+
+                    <!-- Lista de livros do usuário -->
+                    <h3 class="titulo-subsecao">Seus Livros</h3>
+                    <div id="lista-meus-livros" class="grid-livros">
+                        <!-- Os livros do usuário serão inseridos aqui via JavaScript -->
+                        <div class="carregando">Você ainda não cadastrou nenhum livro</div>
+                    </div>
+                </section>
+
+                <!-- ABA 3: Solicitações Recebidas -->
+                <section id="aba-solicitacoes" class="secao-aba">
+                    <h2 class="titulo-secao">📬 Solicitações de Troca Recebidas</h2>
+                    <p class="descricao-secao">Veja quem está interessado em trocar seus livros</p>
+
+                    <!-- Lista de solicitações -->
+                    <div id="lista-solicitacoes" class="lista-solicitacoes">
+                        <!-- As solicitações serão inseridas aqui via JavaScript -->
+                        <div class="carregando">Nenhuma solicitação recebida</div>
                     </div>
                 </section>
             </div>
@@ -181,6 +256,22 @@
             <button id="btn-confirmar-troca" class="btn btn-primario">Confirmar Solicitação</button>
             <button class="btn btn-secundario fechar-modal-btn">Cancelar</button>
             <div class="mensagem-erro" id="msg-erro-troca"></div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL: Responder Solicitacao de Troca
+         ============================================ -->
+    <div id="modal-responder-solicitacao" class="modal">
+        <div class="modal-conteudo">
+            <span class="fechar-modal-resposta">&times;</span>
+            <h2>Responder Solicitacao</h2>
+            <p id="modal-solicitacao-info"></p>
+            <div class="modal-botoes">
+                <button id="btn-aceitar-solicitacao" class="btn btn-sucesso">Aceitar</button>
+                <button id="btn-rejeitar-solicitacao" class="btn btn-erro">Rejeitar</button>
+            </div>
+            <button class="btn btn-secundario fechar-modal-resposta-btn">Fechar</button>
         </div>
     </div>
 

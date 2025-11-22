@@ -1,0 +1,733 @@
+/* ============================================
+   ESTILOS GLOBAIS
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --cor-primaria: #2c3e50;
+    --cor-secundaria: #3498db;
+    --cor-sucesso: #27ae60;
+    --cor-erro: #e74c3c;
+    --cor-fundo: #ecf0f1;
+    --cor-texto: #2c3e50;
+    --cor-borda: #bdc3c7;
+    --cor-hover: #34495e;
+    --sombra: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --sombra-forte: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+}
+
+/* ============================================
+   SISTEMA DE TELAS (Navegação sem reload)
+   ============================================ */
+
+.tela {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.tela.ativa {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   LAYOUT DE FORMULÁRIOS (Login e Cadastro)
+   ============================================ */
+
+.container-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.card-form {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: var(--sombra-forte);
+    width: 100%;
+    max-width: 400px;
+}
+
+.titulo-principal {
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--cor-primaria);
+}
+
+.subtitulo {
+    font-size: 14px;
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+}
+
+/* ============================================
+   FORMULÁRIOS
+   ============================================ */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grupo-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--cor-primaria);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 12px 15px;
+    border: 2px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--cor-secundaria);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* ============================================
+   BOTÕES
+   ============================================ */
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.btn-primario {
+    background-color: var(--cor-secundaria);
+    color: white;
+}
+
+.btn-primario:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn-secundario {
+    background-color: var(--cor-fundo);
+    color: var(--cor-primaria);
+    border: 2px solid var(--cor-borda);
+}
+
+.btn-secundario:hover {
+    background-color: #d5dbdb;
+    border-color: var(--cor-primaria);
+}
+
+.btn-logout {
+    background-color: var(--cor-erro);
+    color: white;
+    padding: 10px 20px;
+    font-size: 13px;
+}
+
+.btn-logout:hover {
+    background-color: #c0392b;
+}
+
+/* ============================================
+   DIVISOR
+   ============================================ */
+
+.divisor {
+    text-align: center;
+    color: #95a5a6;
+    font-size: 12px;
+    margin: 10px 0;
+}
+
+/* ============================================
+   MENSAGENS DE ERRO
+   ============================================ */
+
+.mensagem-erro {
+    color: var(--cor-erro);
+    font-size: 13px;
+    text-align: center;
+    min-height: 20px;
+    margin-top: 10px;
+    display: none;
+}
+
+.mensagem-erro.ativa {
+    display: block;
+}
+
+/* ============================================
+   CABEÇALHO (Home)
+   ============================================ */
+
+.cabecalho {
+    background-color: var(--cor-primaria);
+    color: white;
+    padding: 20px;
+    box-shadow: var(--sombra);
+}
+
+.cabecalho-conteudo {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.info-usuario h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.localizacao {
+    font-size: 13px;
+    color: #ecf0f1;
+}
+
+/* ============================================
+   CONTEÚDO HOME
+   ============================================ */
+
+.conteudo-home {
+    flex: 1;
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.secao-livros {
+    width: 100%;
+}
+
+.titulo-secao {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--cor-primaria);
+}
+
+.descricao-secao {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+}
+
+/* ============================================
+   GRID DE LIVROS
+   ============================================ */
+
+.grid-livros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.card-livro {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--sombra);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-livro:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-forte);
+}
+
+.card-livro-titulo {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--cor-primaria);
+    line-height: 1.4;
+}
+
+.card-livro-autor {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.card-livro-info {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--cor-texto);
+}
+
+.card-livro-info strong {
+    color: var(--cor-primaria);
+}
+
+.card-livro-bairro {
+    font-size: 12px;
+    color: #95a5a6;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card-livro-descricao {
+    font-size: 12px;
+    color: #7f8c8d;
+    margin-bottom: 15px;
+    flex-grow: 1;
+    line-height: 1.4;
+}
+
+.btn-solicitar {
+    background-color: var(--cor-sucesso);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+.btn-solicitar:hover {
+    background-color: #229954;
+    transform: translateY(-2px);
+}
+
+.carregando {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.3s ease-in;
+}
+
+.modal.ativo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-conteudo {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--sombra-forte);
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.fechar-modal {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #7f8c8d;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.fechar-modal:hover {
+    color: var(--cor-primaria);
+}
+
+.modal-conteudo h2 {
+    margin-bottom: 20px;
+    color: var(--cor-primaria);
+}
+
+.modal-conteudo p {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: var(--cor-texto);
+    line-height: 1.5;
+}
+
+.modal-conteudo .btn {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.fechar-modal-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .card-form {
+        padding: 30px 20px;
+    }
+
+    .titulo-principal {
+        font-size: 24px;
+    }
+
+    .cabecalho-conteudo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .grid-livros {
+        grid-template-columns: 1fr;
+    }
+
+    .conteudo-home {
+        padding: 20px 10px;
+    }
+
+    .titulo-secao {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-form {
+        padding: 20px 15px;
+    }
+
+    .titulo-principal {
+        font-size: 20px;
+    }
+
+    .subtitulo {
+        font-size: 12px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    .btn {
+        font-size: 13px;
+    }
+
+    .cabecalho {
+        padding: 15px;
+    }
+
+    .info-usuario h2 {
+        font-size: 18px;
+    }
+
+    .btn-logout {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+}
+
+
+/* ============================================
+   ESTILOS ADICIONAIS - ABAS E FORMULARIOS
+   ============================================ */
+
+.fechar-modal-resposta {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #7f8c8d;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.fechar-modal-resposta:hover {
+    color: var(--cor-primaria);
+}
+
+.modal-botoes {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.modal-botoes .btn {
+    flex: 1;
+    margin-top: 0;
+}
+
+.btn-sucesso {
+    background-color: var(--cor-sucesso);
+    color: white;
+}
+
+.btn-sucesso:hover {
+    background-color: #229954;
+}
+
+.btn-erro {
+    background-color: var(--cor-erro);
+    color: white;
+}
+
+.btn-erro:hover {
+    background-color: #c0392b;
+}
+
+/* ============================================
+   ABAS DE NAVEGACAO
+   ============================================ */
+
+.abas-navegacao {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--cor-borda);
+    flex-wrap: wrap;
+}
+
+.aba-btn {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #7f8c8d;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: -2px;
+}
+
+.aba-btn:hover {
+    color: var(--cor-primaria);
+}
+
+.aba-btn.aba-ativa {
+    color: var(--cor-secundaria);
+    border-bottom-color: var(--cor-secundaria);
+}
+
+/* ============================================
+   SECOES DE ABAS
+   ============================================ */
+
+.secao-aba {
+    display: none;
+}
+
+.secao-aba.ativa {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ============================================
+   CARD FORMULARIO
+   ============================================ */
+
+.card-formulario {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: var(--sombra);
+    margin-bottom: 30px;
+}
+
+.card-formulario h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--cor-primaria);
+}
+
+textarea {
+    padding: 12px 15px;
+    border: 2px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    resize: vertical;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--cor-secundaria);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* ============================================
+   TITULO SUBSECAO
+   ============================================ */
+
+.titulo-subsecao {
+    font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: var(--cor-primaria);
+    font-weight: 600;
+}
+
+/* ============================================
+   LISTA DE SOLICITACOES
+   ============================================ */
+
+.lista-solicitacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card-solicitacao {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--sombra);
+    border-left: 4px solid var(--cor-secundaria);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.card-solicitacao:hover {
+    box-shadow: var(--sombra-forte);
+    transform: translateX(5px);
+}
+
+.solicitacao-info {
+    flex: 1;
+}
+
+.solicitacao-usuario {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cor-primaria);
+    margin-bottom: 5px;
+}
+
+.solicitacao-livro {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+}
+
+.solicitacao-data {
+    font-size: 12px;
+    color: #95a5a6;
+}
+
+.solicitacao-acoes {
+    display: flex;
+    gap: 10px;
+    margin-left: 15px;
+}
+
+.btn-responder {
+    padding: 8px 15px;
+    font-size: 12px;
+    background-color: var(--cor-secundaria);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-responder:hover {
+    background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+    .abas-navegacao {
+        gap: 5px;
+    }
+
+    .aba-btn {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
+    .card-solicitacao {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .solicitacao-acoes {
+        margin-left: 0;
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    .btn-responder {
+        flex: 1;
+    }
+}
