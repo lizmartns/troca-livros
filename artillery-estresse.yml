@@ -1,0 +1,25 @@
+config:
+  target: "http://localhost:3000/api"
+  phases:
+    - duration: 60
+      arrivalRate: 20
+      name: "Aquecimento"
+    - duration: 60
+      arrivalRate: 50
+      name: "Carga alta"
+    - duration: 60
+      arrivalRate: 100
+      name: "Estresse máximo"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+scenarios:
+  - name: "Estresse em /login e /books"
+    flow:
+      - post:
+          url: "/login"
+          json:
+            email: "joao@example.com"
+            senha: "123456"
+      - get:
+          url: "/books?cidade=São%20Paulo"

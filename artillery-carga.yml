@@ -1,0 +1,19 @@
+config:
+  target: "http://localhost:3000/api"
+  phases:
+    - duration: 60        # 1 minuto de carga
+      arrivalRate: 10     # 10 usuários virtuais/segundo
+      name: "Carga moderada em /login e /books"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+scenarios:
+  - name: "Login e consulta de livros"
+    flow:
+      - post:
+          url: "/login"
+          json:
+            email: "joao@example.com"
+            senha: "123456"
+      - get:
+          url: "/books?cidade=São%20Paulo"
